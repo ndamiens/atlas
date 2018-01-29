@@ -1,0 +1,15 @@
+{
+   "name": "picnat/clicnatqg",
+   "description": "clicnat admin",
+   "type": "",
+   "autoload": {
+   },
+   "require": {
+      "picnat/clicnatcore": "dev-master",
+      "proj4php/proj4php": "^2.0"
+   },
+   "repositories": [{
+      "type": "vcs",
+      "url": "https://github.com/picardie-nature/clicnat-core.git"
+   }]
+}
