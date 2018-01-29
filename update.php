@@ -88,7 +88,7 @@ $extraction->ajouter_condition(new bobs_ext_c_indice_qualite(['3','4']));
 $extraction->ajouter_condition(new bobs_ext_c_sans_tag_invalide());
 $extraction->ajouter_condition(new bobs_ext_c_pas_prosp_neg());
 $extraction->ajouter_condition(new bobs_ext_c_interval_date("01/01/2010","31/12/2020"));
-dump($extraction, "www/micro.geojson");
+dump($extraction, "www/data/micro.geojson");
 
 $extraction = new bobs_extractions(get_db());
 $extraction->ajouter_condition(new bobs_ext_c_reseau(new clicnat2_reseau(get_db(), 'mt')));
@@ -96,5 +96,4 @@ $extraction->ajouter_condition(new bobs_ext_c_indice_qualite(['3','4']));
 $extraction->ajouter_condition(new bobs_ext_c_sans_tag_invalide());
 $extraction->ajouter_condition(new bobs_ext_c_pas_prosp_neg());
 $extraction->ajouter_condition(new bobs_ext_c_interval_date("01/01/2010","31/12/2020"));
-dump($extraction, "www/mt.geojson");
-
+dump($extraction, "www/data/mt.geojson");
