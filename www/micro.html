@@ -40,14 +40,14 @@
 		</div>
 		<script type="text/javascript">
 			var prj2154 = ol.proj.get('EPSG:2154');
-			
+
 			var mailles =  new ol.layer.Vector({
 				source: new ol.source.Vector({
 					format: new ol.format.GeoJSON({
 						featureProjection :'EPSG:3857',
 					}),
 					url: function (extent, resolution) {
-						return './micro.geojson';
+						return 'http://poste.obs.picardie-nature.org/?t=atlas_ng_proxy&file=micro.geojson';
 					}
 
 				}),
@@ -113,4 +113,3 @@
     </script>
   </body>
 </html>
-
