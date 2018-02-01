@@ -82,7 +82,7 @@
 			var legende = new ol.control.Control({element: document.getElementById("legende")});
 			var items = carte['legende'];
 			for (var i=0;i<items.length;i++) {
-				$('#legende').append("<div style=\"width: 80px; background-color:"+items[i][2]+";\">"+items[i][0]+" &gt;= "+items[i][1]+"</div>");
+				$('#legende').append("<div style=\"width: 80px; background-color:"+items[i][2]+";\">de "+items[i][0]+" à "+items[i][1]+"</div>");
 			}
 			var mailles =  new ol.layer.Vector({
 				source: new ol.source.Vector({
@@ -94,7 +94,7 @@
 					}
 				}),
 				style: function (feature,resolution) {
-					var n = feature.getProperties().occurences;
+					var n = feature.getProperties().species;
 					var c = 'rgb(255,0,0)';
 					var items = carte['legende'];
 					for (var i=0;i<items.length;i++) {
