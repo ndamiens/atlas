@@ -52,6 +52,14 @@ function dump(bobs_extractions $extraction, $path) {
 	$selection = new bobs_selection(get_db(), ID_SELECTION);
 	$selection->vider();
 	$extraction->dans_selection($selection->id_selection);
+
+	$filtre = new bobs_selection_filtre_superficie_max(get_db());
+	$filtre->set('id_selection', ID_SELECTION);
+	$filtre->set('smax', 2000);
+	$filtre->prepare();
+	$filtre->execute();
+	$selection = new bobs_selection(get_db(), ID_SELECTION);
+
 	$n_carres = $selection->carres_nespeces_ncitations($pas,$srid);
 	$carto = [
 		"type" => "FeatureCollection",
