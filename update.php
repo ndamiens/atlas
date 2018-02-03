@@ -7,6 +7,7 @@ use Picnat\Clicnat\ExtractionsConditions\bobs_ext_c_sans_tag_invalide;
 use Picnat\Clicnat\ExtractionsConditions\bobs_ext_c_pas_prosp_neg;
 use Picnat\Clicnat\ExtractionsConditions\bobs_ext_c_interval_date;
 use Picnat\Clicnat\ExtractionsConditions\bobs_ext_c_reseau;
+use Picnat\Clicnat\ExtractionsConditions\bobs_ext_c_taxon_branche;
 
 require_once("db.php");
 require_once("config.php");
@@ -89,6 +90,25 @@ function dump(bobs_extractions $extraction, $path) {
 
 	file_put_contents($path, json_encode($carto, JSON_PRETTY_PRINT));
 }
+
+
+$amphibiens = 4088;
+$extraction = new bobs_extractions($db);
+$extraction->ajouter_condition(new bobs_ext_c_taxon_branche($amphibiens));
+$extraction->ajouter_condition(new bobs_ext_c_indice_qualite(['3','4']));
+$extraction->ajouter_condition(new bobs_ext_c_sans_tag_invalide());
+$extraction->ajouter_condition(new bobs_ext_c_pas_prosp_neg());
+$extraction->ajouter_condition(new bobs_ext_c_interval_date("01/01/2010","31/12/2020"));
+dump($extraction, "www/data/amphibiens.geojson");
+
+$reptiles = 5277;
+$extraction = new bobs_extractions($db);
+$extraction->ajouter_condition(new bobs_ext_c_taxon_branche($reptiles));
+$extraction->ajouter_condition(new bobs_ext_c_indice_qualite(['3','4']));
+$extraction->ajouter_condition(new bobs_ext_c_sans_tag_invalide());
+$extraction->ajouter_condition(new bobs_ext_c_pas_prosp_neg());
+$extraction->ajouter_condition(new bobs_ext_c_interval_date("01/01/2010","31/12/2020"));
+dump($extraction, "www/data/reptiles.geojson");
 
 $extraction = new bobs_extractions(get_db());
 $extraction->ajouter_condition(new bobs_ext_c_liste_especes(LISTE_ESPECE_UMAM));
