@@ -142,12 +142,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/picardie-nature/clicnat-core.git",
-                "reference": "4b8e90ee3d56d254b67534d9c2ca396562ea2d86"
+                "reference": "70799fd81c5ef02feabd9f2b01e5c2e37781926f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/picardie-nature/clicnat-core/zipball/4b8e90ee3d56d254b67534d9c2ca396562ea2d86",
-                "reference": "4b8e90ee3d56d254b67534d9c2ca396562ea2d86",
+                "url": "https://api.github.com/repos/picardie-nature/clicnat-core/zipball/70799fd81c5ef02feabd9f2b01e5c2e37781926f",
+                "reference": "70799fd81c5ef02feabd9f2b01e5c2e37781926f",
                 "shasum": ""
             },
             "require": {
@@ -177,7 +177,7 @@
                 "source": "https://github.com/picardie-nature/clicnat-core/tree/master",
                 "issues": "https://github.com/picardie-nature/clicnat-core/issues"
             },
-            "time": "2018-02-03 15:07:37"
+            "time": "2018-02-04 07:57:56"
         },
         {
             "name": "proj4php/proj4php",

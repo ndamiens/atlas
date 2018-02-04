@@ -47,19 +47,26 @@ function carre($carre, $pas, $n_occurences, $n_species) {
 	];
 }
 
-function dump(bobs_extractions $extraction, $path) {
+function dump(bobs_extractions $extraction, $path, $filtre_hivernage=false, $enlever_obs_hivers=true) {
 	$pas = 5000;
 	$srid = 2154;
 	$selection = new bobs_selection(get_db(), ID_SELECTION);
 	$selection->vider();
 	$extraction->dans_selection($selection->id_selection);
 
-	$filtre = new bobs_selection_filtre_superficie_max(get_db());
+	$filtre = new bobs_selection_retirer_polygon_superficie_max_espece(get_db());
 	$filtre->set('id_selection', ID_SELECTION);
-	$filtre->set('smax', 2000);
 	$filtre->prepare();
 	$filtre->execute();
 	$selection = new bobs_selection(get_db(), ID_SELECTION);
+
+	if ($filtre_hivernage) {
+		$as = new bobs_selection_enlever_ou_conserver_que_hivernage(get_db());
+		$as->set('id_selection', ID_SELECTION);
+		$as->set('enlever', $enlever_obs_hivers);
+		$as->prepare();
+		$as->execute();
+	}
 
 	$n_carres = $selection->carres_nespeces_ncitations($pas,$srid);
 	$carto = [
@@ -91,6 +98,23 @@ function dump(bobs_extractions $extraction, $path) {
 	file_put_contents($path, json_encode($carto, JSON_PRETTY_PRINT));
 }
 
+//chiros
+$reseau = 'cs';
+$extraction = new bobs_extractions($db);
+$extraction->ajouter_condition(new bobs_ext_c_reseau(get_bobs_reseau($db, $reseau)));
+$extraction->ajouter_condition(new bobs_ext_c_indice_qualite(['3','4']));
+$extraction->ajouter_condition(new bobs_ext_c_sans_tag_invalide());
+$extraction->ajouter_condition(new bobs_ext_c_pas_prosp_neg());
+$extraction->ajouter_condition(new bobs_ext_c_interval_date("01/01/2008","31/12/2020"));
+dump($extraction, "www/data/cs_ete.geojson", true, true);
+
+$extraction = new bobs_extractions($db);
+$extraction->ajouter_condition(new bobs_ext_c_reseau(get_bobs_reseau($db, $reseau)));
+$extraction->ajouter_condition(new bobs_ext_c_indice_qualite(['3','4']));
+$extraction->ajouter_condition(new bobs_ext_c_sans_tag_invalide());
+$extraction->ajouter_condition(new bobs_ext_c_pas_prosp_neg());
+$extraction->ajouter_condition(new bobs_ext_c_interval_date("01/01/2008","31/12/2020"));
+dump($extraction, "www/data/cs_hivers.geojson", true, false);
 
 $amphibiens = 4088;
 $extraction = new bobs_extractions($db);
