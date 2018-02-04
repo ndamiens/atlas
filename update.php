@@ -114,7 +114,7 @@ $extraction->ajouter_condition(new bobs_ext_c_indice_qualite(['3','4']));
 $extraction->ajouter_condition(new bobs_ext_c_sans_tag_invalide());
 $extraction->ajouter_condition(new bobs_ext_c_pas_prosp_neg());
 $extraction->ajouter_condition(new bobs_ext_c_interval_date("01/01/2008","31/12/2020"));
-dump($extraction, "www/data/cs_hivers.geojson", true, false);
+dump($extraction, "www/data/cs_hiver.geojson", true, false);
 
 $amphibiens = 4088;
 $extraction = new bobs_extractions($db);

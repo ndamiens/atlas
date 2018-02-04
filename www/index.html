@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="fr">
+	<head>
+		<link rel="stylesheet" href="https://openlayers.org/en/v4.3.3/css/ol.css" type="text/css">
+		<style>
+			body {
+				height: 100%;
+			}
+			.map {
+				position: fixed;
+				height: 100%;
+				width: 100%;
+			}
+			#popup {
+				width: 200px;
+				background-color: white;
+				padding: 3px;
+			}
+			#popup-content {
+				font-family: sans-serif;
+				font-size: 12px;
+			}
+
+			.titre {
+				top: 30px;
+				left: 60px;
+				font-weight: bold;
+				font-size: 16px;
+			}
+
+			.legende {
+				top: 30px;
+				right: 100px;
+				width: 40px;
+			}
+		</style>
+		<meta charset="utf-8"/>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.4.4/proj4.js"></script>
+		<script src="https://epsg.io/2154.js"></script>
+		<script src="https://openlayers.org/en/v4.3.3/build/ol-debug.js" type="text/javascript"></script>
+		<script src="https://code.jquery.com/jquery-2.2.3.min.js"></script>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+		<title>Atlas Umam</title>
+	</head>
+	<body>
+		<div id="map" class="map"></div>
+		<div id="titre" class="titre ol-control"></div>
+		<div id="legende" class="legende ol-control"></div>
+		<div id="log"></div>
+		<div style="display:none;">
+			<div id="popup" class="ol-popup">
+				<a href="#" id="popup-closer" class="ol-popup-closer"></a>
+				<div id="popup-content"></div>
+			</div>
+		</div>
+		<script type="text/javascript">
+			var prj2154 = ol.proj.get('EPSG:2154');
+			var cartes = {
+				reptiles: {
+					titre: "Atlas 2010-2020 reptiles - Picardie Nature",
+					data: "data/reptiles.geojson",
+					legende: [
+						[1,3,   'rgba(255,245,235,0.5)'],
+						[4,6,   'rgba(253,218,182,0.5)'],
+						[7,9,   'rgba(253,171,103,0.5)' ],
+						[10,15, 'rgba(245,118,34,0.5)'  ],
+						[16,20, 'rgba(208,69,1,0.5)'  ],
+						[21,25, 'rgba(127,39,4,0.5)' ]
+					]
+				},
+				amphibiens: {
+					titre: "Atlas 2010-2020 amphibiens - Picardie Nature",
+					data: "data/amphibiens.geojson",
+					legende: [
+						[1,3,   'rgba(255,245,235,0.5)'],
+						[4,6,   'rgba(253,218,182,0.5)'],
+						[7,9,   'rgba(253,171,103,0.5)' ],
+						[10,15, 'rgba(245,118,34,0.5)'  ],
+						[16,20, 'rgba(208,69,1,0.5)'  ],
+						[21,25, 'rgba(127,39,4,0.5)' ]
+					]
+				},
+				mt: {
+					titre: "Atlas 2010-2020 mammifères terrestres - Picardie Nature",
+					data: "data/mt.geojson",
+					legende: [
+						[1,5,   'rgba(255,245,235,0.5)'],
+						[6,10,  'rgba(253,218,182,0.5)'],
+						[11,15,  'rgba(253,171,103,0.5)' ],
+						[16,20, 'rgba(245,118,34,0.5)'  ],
+						[21,30, 'rgba(208,69,1,0.5)'  ],
+						[31,50, 'rgba(127,39,4,0.5)' ]
+					]
+				},
+				micro: {
+					titre: "Atlas 2010-2020 micro-mammifères - Picardie Nature",
+					data: "data/micro.geojson",
+					legende: [
+						[1,3,   'rgba(255,245,235,0.5)'],
+						[4,6,   'rgba(253,218,182,0.5)'],
+						[7,9,   'rgba(253,171,103,0.5)' ],
+						[10,15, 'rgba(245,118,34,0.5)'  ],
+						[16,20, 'rgba(208,69,1,0.5)'  ],
+						[21,25, 'rgba(127,39,4,0.5)' ]
+					]
+				},
+				cs_ete: {
+					titre: "Atlas 2010-2020 Chiroptères été - Picardie Nature",
+					data: "data/cs_ete.geojson",
+					legende: [
+						[1,3,   'rgba(255,245,235,0.5)'],
+						[4,6,   'rgba(253,218,182,0.5)'],
+						[7,9,   'rgba(253,171,103,0.5)' ],
+						[10,15, 'rgba(245,118,34,0.5)'  ],
+						[16,20, 'rgba(208,69,1,0.5)'  ],
+						[21,25, 'rgba(127,39,4,0.5)' ]
+					]
+				},
+				cs_hiv: {
+					titre: "Atlas 2010-2020 Chiroptères hiver - Picardie Nature",
+					data: "data/cs_hiver.geojson",
+					legende: [
+						[1,3,   'rgba(255,245,235,0.5)'],
+						[4,6,   'rgba(253,218,182,0.5)'],
+						[7,9,   'rgba(253,171,103,0.5)' ],
+						[10,15, 'rgba(245,118,34,0.5)'  ],
+						[16,20, 'rgba(208,69,1,0.5)'  ],
+						[21,25, 'rgba(127,39,4,0.5)' ]
+					]
+				}
+			};
+
+
+			var id_carte = document.location.href.split('#')[1];
+
+			if (id_carte != undefined) {
+				var carte = cartes[id_carte];
+				if (carte == undefined) {
+					alert('mauvais identifiant de carte');
+					//return; mais faudrai être dans une fonction
+				}
+				/**
+				 * si on est dans Clicnat on passe dans le proxy
+				 */
+				function getDataUrl() {
+					if (window.location.host == 'poste.obs.picardie-nature.org') {
+						return 'http://poste.obs.picardie-nature.org/?t=atlas_ng_proxy&file=';
+					}
+					return '';
+				}
+
+				$('#titre').html(carte['titre']);
+				var titre = new ol.control.Control({element:document.getElementById("titre")});
+
+				var legende = new ol.control.Control({element: document.getElementById("legende")});
+				var items = carte['legende'];
+				for (var i=0;i<items.length;i++) {
+					$('#legende').append("<div style=\"width: 80px; background-color:"+items[i][2]+";\">de "+items[i][0]+" à "+items[i][1]+"</div>");
+				}
+				var mailles =  new ol.layer.Vector({
+					source: new ol.source.Vector({
+						format: new ol.format.GeoJSON({
+							featureProjection :'EPSG:3857',
+						}),
+						url: function (extent, resolution) {
+							return getDataUrl()+carte['data'];
+						}
+					}),
+					style: function (feature,resolution) {
+						var n = feature.getProperties().species;
+						var c = 'rgb(255,0,0)';
+						var items = carte['legende'];
+						for (var i=0;i<items.length;i++) {
+							if (n >= items[i][0] && n <= items[i][1]) {
+								c = items[i][2];
+								break;
+							}
+						}
+						var style = new ol.style.Style({
+							fill: new ol.style.Fill({color: c}),
+							stroke: new ol.style.Stroke({color: 'white', width: 1}),
+						});
+						return [style];
+					},
+				});
+
+				var overlay = new ol.Overlay({
+					element: document.getElementById('popup'),
+				});
+
+				var interaction = new ol.interaction.Select();
+				interaction.getFeatures().on("add", function (e) {
+					e.preventDefault();
+					var p = e.element.getProperties();
+					var element = overlay.getElement();
+					$(element).popover('destroy');
+					var coordinates = e.element.getGeometry().getCoordinates()[0][0];
+					overlay.setPosition(coordinates);
+					overlay.setVisible(true);
+					$('#popup-content').html("<h4>"+p["id"]+"</h4><h5>Occurrences <code>"+p["occurences"]+"</code> -  Taxons <code>"+p["species"]+"</code></h5><ul>");
+					p["taxons"].forEach(function (e) {
+						$('#popup-content').append("<li title=\""+e["nom_s"]+"\">"+e["lib"]+"</li>");
+					});
+					$('#popup-content').append("</ul>");
+					$(element).popover('show');
+				});
+
+				var map = new ol.Map({
+					target: 'map',
+					controls: ol.control.defaults({}).extend([
+						titre, legende
+					]),
+					//overlays: [overlay],
+					layers: [
+						new ol.layer.Tile({
+							source: new ol.source.OSM()
+						}),
+						mailles,
+					],
+					view: new ol.View({
+					center: ol.proj.fromLonLat([1.9251063,49.7151583]),
+					zoom: 8
+					})
+				});
+
+				map.addOverlay(overlay);
+				map.addInteraction(interaction);
+			}
+    </script>
+  </body>
+</html>
